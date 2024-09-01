@@ -17,6 +17,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+// shield roles
+use \BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -63,6 +65,9 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->sidebarCollapsibleOnDesktop();
+            ->sidebarCollapsibleOnDesktop()
+            ->plugins([
+                FilamentShieldPlugin::make()
+            ]);
     }
 }
