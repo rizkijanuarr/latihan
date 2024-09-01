@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
+use App\Filament\Imports\PostImporter;
 
 class PostResource extends Resource
 {
@@ -43,6 +44,7 @@ class PostResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('category.name')
                     ->numeric()
@@ -130,6 +132,12 @@ class PostResource extends Resource
                             echo $pdf->stream();
                         }, 'posts-' . now()->format('Y-m-d_H-i-s') . '.pdf');
                     }),
+                    Tables\Actions\ImportAction::make()
+                        ->label('Import Post')
+                        ->color('info')
+                        ->button()
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->importer(PostImporter::class),
             ]);
     }
 

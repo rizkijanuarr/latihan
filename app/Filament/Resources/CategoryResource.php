@@ -12,7 +12,10 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+//
+use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Str;
+use App\Filament\Imports\CategoryImporter;
 class CategoryResource extends Resource
 {
     use \App\Traits\HasNavigationBadge;
@@ -23,12 +26,25 @@ class CategoryResource extends Resource
 
     public static function form(Form $form): Form
     {
+        // return $form
+        //     ->schema([
+        //         Forms\Components\TextInput::make('name')
+        //             ->required()
+        //             ->maxLength(255),
+        //         Forms\Components\TextInput::make('slug')
+        //             ->required()
+        //             ->maxLength(255),
+        //     ]);
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
+                    ->maxLength(255)
+                    ->reactive() // Make the field reactive
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $set('slug', Str::slug($state));
+                    }),
+                TextInput::make('slug')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -37,6 +53,7 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
@@ -62,6 +79,14 @@ class CategoryResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                Tables\Actions\ImportAction::make()
+                ->label('Import Category')
+                ->color('info')
+                ->button()
+                ->icon('heroicon-o-document-arrow-down')
+                ->importer(CategoryImporter::class),
             ]);
     }
 
