@@ -1,0 +1,14 @@
+models:
+  Category:
+    name: string
+    slug: string unique
+    relationships:
+      hasMany: Post
+
+  Post:
+    category_id: foreign nullable
+    name: string
+    description: text
+    views: integer
+
+seeders: Category, Post

@@ -1,0 +1,13 @@
+created:
+    - database/factories/CategoryFactory.php
+    - database/factories/PostFactory.php
+    - database/migrations/2024_08_31_194108_create_categories_table.php
+    - database/migrations/2024_08_31_194109_create_posts_table.php
+    - app/Models/Category.php
+    - app/Models/Post.php
+    - database/seeders/CategorySeeder.php
+    - database/seeders/PostSeeder.php
+models:
+    User: { name: string, email: string, email_verified_at: 'timestamp nullable', password: string, remember_token: 'string:100 nullable' }
+    Category: { name: string, slug: 'string unique', relationships: { hasMany: Post } }
+    Post: { category_id: 'foreign nullable', name: string, description: text, views: integer }
